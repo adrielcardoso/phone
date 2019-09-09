@@ -1,25 +1,18 @@
 import { Component } from '@angular/core';
-
+import { HttpClient } from '@angular/common/http';
+import { isArray } from 'util';
 
 export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
+  country: string;
+  state: string;
+  countryCode: string;
+  phoneNumber: string;
 }
 
-const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
-];
+export interface Select {
+  value: number;
+  label: string;
+}
 
 @Component({
   selector: 'app-root',
@@ -27,6 +20,54 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-  dataSource = ELEMENT_DATA;
+  displayedColumns: string[] = ['country', 'countryCode', 'name', 'phone', 'phoneNumber', 'state'];
+  dataSource = [];
+  validNumber:number = null;
+  region:number = null;
+  regions: Select[] = [
+    {value: 237, label: '+237 - Cameroon'},
+    {value: 251, label: '+251 - Ethiopia'},
+    {value: 212, label: '+212 - Morocco'},
+    {value: 258, label: '+258 - Mozambique'},
+    {value: 256, label: '+256 - Uganda'},
+  ];
+  valids: Select[] = [
+    {value: 0, label: 'Choose'},
+    {value: 1, label: 'Yes'},
+    {value: 2, label: 'No'},
+  ];
+
+  constructor(private http: HttpClient) { }
+
+  changeRegion(region){
+    this.region = region;
+    this.findData('/region/ddi/'+region+ this.parseValidNumber());
+  }
+
+  changeValid(valid){
+    this.validNumber = valid;
+    if(this.region){
+      this.changeRegion(this.region);
+      return;
+    }
+    this.findData(this.parseValidNumber());
+  }
+
+  ngOnInit(){
+    this.findData(null);    
+  }
+
+  private parseValidNumber(){
+    return (this.validNumber == 1 ? '/ok' : (this.validNumber == 2 ? '/nok' : ''));
+  }
+
+  async findData(endPoint){
+    this.http.get('http://localhost:8000/api/v1/customer' + (endPoint ? endPoint : '')).subscribe(result => {
+      if(result['status'] != 200) {
+        alert('error in find data, try again!');
+        return;
+      };
+      this.dataSource = isArray(result['data']) ? result['data'] : [];
+    })
+  }
 }

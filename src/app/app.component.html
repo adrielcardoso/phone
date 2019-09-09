@@ -3,37 +3,66 @@
 </mat-toolbar>
 
 <div class="pcontainer" style="padding-top: 1%">
+
+  <h4>Select Country</h4>
+  <mat-form-field>
+    <mat-label>Region DDI</mat-label>
+    <mat-select (selectionChange)="changeRegion($event.value)">
+      <mat-option *ngFor="let single of regions" [value]="single.value">
+        {{single.label}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <h4>Valid phone Numbers</h4>
+  <mat-form-field>
+    <mat-label>Number valid ?</mat-label>
+    <mat-select (selectionChange)="changeValid($event.value)">
+      <mat-option *ngFor="let single of valids" [value]="single.value">
+        {{single.label}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
     <!-- Position Column -->
-    <ng-container matColumnDef="position">
-      <th mat-header-cell *matHeaderCellDef> No. </th>
-      <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+    <ng-container matColumnDef="country">
+      <th mat-header-cell *matHeaderCellDef> COUNTRY </th>
+      <td mat-cell *matCellDef="let element"> {{element.country}} </td>
     </ng-container>
   
     <!-- Name Column -->
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef> Name </th>
-      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+    <ng-container matColumnDef="countryCode">
+      <th mat-header-cell *matHeaderCellDef> DDI </th>
+      <td mat-cell *matCellDef="let element"> {{element.countryCode}} </td>
     </ng-container>
   
     <!-- Weight Column -->
-    <ng-container matColumnDef="weight">
-      <th mat-header-cell *matHeaderCellDef> Weight </th>
-      <td mat-cell *matCellDef="let element"> {{element.weight}} </td>
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> NAME </th>
+      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
     </ng-container>
   
     <!-- Symbol Column -->
-    <ng-container matColumnDef="symbol">
-      <th mat-header-cell *matHeaderCellDef> Symbol </th>
-      <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
+    <ng-container matColumnDef="phone">
+      <th mat-header-cell *matHeaderCellDef> PHONE </th>
+      <td mat-cell *matCellDef="let element"> {{element.phone}} </td>
+    </ng-container>
+
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="phoneNumber">
+      <th mat-header-cell *matHeaderCellDef> NUMBER </th>
+      <td mat-cell *matCellDef="let element"> {{element.phoneNumber}} </td>
+    </ng-container>
+
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="state">
+      <th mat-header-cell *matHeaderCellDef> STATE </th>
+      <td mat-cell *matCellDef="let element"> {{element.state}} </td>
     </ng-container>
   
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
-  <mat-paginator [length]="100"
-                [pageSize]="10"
-                [pageSizeOptions]="[5, 10, 25, 100]">
-  </mat-paginator>
 </div>
